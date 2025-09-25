@@ -17,16 +17,6 @@ products:
     price: 30
     sku: 999921312423312
     description: awesome
-  - name: orange
-    price: 8
-    sku: 123321123
-    description: wouh
-    id: 4
-  - name: orange
-    price: 8
-    sku: 123321123
-    description: wouh
-    id: 5
 orders:
   - id: 1
     name: order1
@@ -35,7 +25,7 @@ orders:
     name: order2
     sku: 999921312423
   - id: 3
-    name: order2
+    name: order3
     sku: 999921312423312
 users:
   - id: 1
@@ -119,3 +109,13 @@ users:
     signUpDate: 2019-08-24
     status: active
     level: consumer
+/unauthorized:
+  GET:
+    status: 401
+    body:
+      message: Unauthorized
+/notfound:
+  GET:
+    status: 404
+    body:
+      message: Not Found
