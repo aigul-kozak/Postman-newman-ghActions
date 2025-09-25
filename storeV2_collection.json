@@ -1,0 +1,1125 @@
+{
+	"info": {
+		"_postman_id": "ddfec648-90d2-4f61-a67c-4fa3b00a8fb6",
+		"name": "store",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "5617590"
+	},
+	"item": [
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "Create product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Arrange\r",
+									"const schema = {\r",
+									" \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"name\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"price\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    },\r",
+									"    \"sku\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    },\r",
+									"    \"description\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"id\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"name\",\r",
+									"    \"price\",\r",
+									"    \"sku\",\r",
+									"    \"description\",\r",
+									"    \"id\"\r",
+									"  ]\r",
+									"};\r",
+									"\r",
+									"// Arrange\r",
+									"let jsonData = pm.response.json();\r",
+									"\r",
+									"// Act + Assert (status code)\r",
+									"pm.test(\"Status code is 201 (product created)\", function () {\r",
+									"    pm.expect(pm.response.code).to.eql(201);\r",
+									"});\r",
+									"\r",
+									"// Act + Assert (schema validation)\r",
+									"pm.test(\"Response matches the schema\", function () {\r",
+									"    pm.response.to.have.jsonSchema(schema);\r",
+									"});\r",
+									"\r",
+									"// Act + Assert (response time < 500 ms)\r",
+									"pm.test(\"Response time is less than 500ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+									"});\r",
+									"\r",
+									"// Save productId\r",
+									"pm.collectionVariables.set(\"productId\", jsonData.id);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"orange\",\r\n    \"price\": 8,\r\n    \"sku\": 123321123,\r\n    \"description\": \"wouh\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/products"
+					},
+					"response": []
+				},
+				{
+					"name": "Get product by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Arrange\r",
+									"const schema = {\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"name\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"price\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    },\r",
+									"    \"sku\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    },\r",
+									"    \"description\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"id\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"name\",\r",
+									"    \"price\",\r",
+									"    \"sku\",\r",
+									"    \"description\",\r",
+									"    \"id\"\r",
+									"  ]\r",
+									"};\r",
+									"\r",
+									"// Arrange\r",
+									"let jsonData = pm.response.json();\r",
+									"let savedProductId = pm.collectionVariables.get(\"productId\");\r",
+									"\r",
+									"// Act + Assert (status code)\r",
+									"pm.test(\"Status code is 200 (requested product returned)\", function () {\r",
+									"    pm.expect(pm.response.code).to.eql(200);\r",
+									"});\r",
+									"\r",
+									"// Act + Assert (schema validation)\r",
+									"pm.test(\"Response matches the schema\", function () {\r",
+									"    pm.response.to.have.jsonSchema(schema);\r",
+									"});\r",
+									"\r",
+									"// Act + Assert (response time < 500 ms)\r",
+									"pm.test(\"Response time is less than 500ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+									"});\r",
+									"\r",
+									"// Act + Assert (id is equal to saved id)\r",
+									"pm.test(\"Product id matches previously created id\", function () {\r",
+									"    pm.expect(jsonData.id).to.eql(Number(savedProductId));\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/products/{{productId}}"
+					},
+					"response": []
+				},
+				{
+					"name": "List products",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Arrange\r",
+									"const productSchema = {\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"name\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"price\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    },\r",
+									"    \"sku\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    },\r",
+									"    \"description\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"id\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"name\",\r",
+									"    \"price\",\r",
+									"    \"sku\",\r",
+									"    \"description\",\r",
+									"    \"id\"\r",
+									"  ]\r",
+									"};\r",
+									"\r",
+									"const productsListSchema = {\r",
+									"  \"type\": \"array\",\r",
+									"  \"items\": productSchema\r",
+									"};\r",
+									"\r",
+									"// Arrange\r",
+									"let productsList = pm.response.json();  // users array\r",
+									"let savedProductId = Number(pm.collectionVariables.get(\"productId\")); // <- get saved orderId\r",
+									"\r",
+									"// Act + Assert (status code)\r",
+									"pm.test(\"Status code is 200 (product list retrieved)\", function () {\r",
+									"    pm.expect(pm.response.code).to.eql(200);\r",
+									"});\r",
+									"\r",
+									"// Act + Assert (schema validation)\r",
+									"pm.test(\"Response matches the schema\", function () {\r",
+									"    pm.response.to.have.jsonSchema(productsListSchema);\r",
+									"});\r",
+									"\r",
+									"// Act + Assert (response time < 500 ms)\r",
+									"pm.test(\"Response time is less than 500ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+									"});\r",
+									"\r",
+									"// Act + Assert (list maintains the saved product)\r",
+									"pm.test(\"Previously created product is in the list\", function () {\r",
+									"    let productIds = productsList.map(product => product.id);\r",
+									"    pm.expect(productIds).to.include(savedProductId);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/products"
+					},
+					"response": []
+				},
+				{
+					"name": "Update product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Arrange\r",
+									"const schema = {\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"name\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"price\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    },\r",
+									"    \"sku\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    },\r",
+									"    \"description\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"id\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"name\",\r",
+									"    \"price\",\r",
+									"    \"sku\",\r",
+									"    \"description\",\r",
+									"    \"id\"\r",
+									"  ]\r",
+									"};\r",
+									"\r",
+									"// Arrange\r",
+									"let jsonData = pm.response.json();\r",
+									"let savedProductId = pm.collectionVariables.get(\"productId\");\r",
+									"\r",
+									"\r",
+									"// Act + Assert (status code)\r",
+									"pm.test(\"Status code is 200 (requested product returned)\", function () {\r",
+									"    pm.expect(pm.response.code).to.eql(200);\r",
+									"});\r",
+									"\r",
+									"// Act + Assert (schema validation)\r",
+									"pm.test(\"Response matches the schema\", function () {\r",
+									"    pm.response.to.have.jsonSchema(schema);\r",
+									"});\r",
+									"\r",
+									"// Act + Assert (response time < 500 ms)\r",
+									"pm.test(\"Response time is less than 500ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+									"});\r",
+									"\r",
+									"// Act + Assert (id is equal to saved id)\r",
+									"pm.test(\"Product id matches previously created id\", function () {\r",
+									"    pm.expect(jsonData.id).to.eql(Number(savedProductId));\r",
+									"});\r",
+									"\r",
+									"// Act + Assert (updated fields check)\r",
+									"pm.test(\"Fields updated\", function () {\r",
+									"    pm.expect(jsonData.name).to.eql(\"banana\");\r",
+									"    pm.expect(jsonData.price).to.eql(155);\r",
+									"    pm.expect(jsonData.sku).to.eql(123321123);\r",
+									"    pm.expect(jsonData.description).to.eql(\"changed description\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": {{productId}},\r\n    \"name\": \"banana\",\r\n    \"price\": 155,\r\n    \"sku\": 123321123,\r\n    \"description\": \"changed description\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/products"
+					},
+					"response": []
+				},
+				{
+					"name": "Remove product by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Act + Assert (status code)\r",
+									"pm.test(\"Status code is 200 or 204 (product deleted)\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 204]);\r",
+									"});\r",
+									"\r",
+									"// Act + Assert (response time < 500ms)\r",
+									"pm.test(\"Response time is less than 500ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+									"});\r",
+									"\r",
+									"// Check JSON only if there is a body\r",
+									"if (pm.response.body && pm.response.body.length > 0) {\r",
+									"    let jsonData = pm.response.json();\r",
+									"    pm.test(\"Product id matches the saved id\", function () {\r",
+									"        pm.expect(jsonData.id).to.eql(Number(pm.collectionVariables.get(\"orderId\")));\r",
+									"    });\r",
+									"}\r",
+									"// Remove variable from collection\r",
+									"pm.collectionVariables.unset(\"productId\");\r",
+									"\r",
+									"// Check that variable does not exist anymore\r",
+									"pm.test(\"Previously created productId variable removed\", function () {\r",
+									"    pm.expect(pm.collectionVariables.has(\"productId\")).to.be.false;\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{baseUrl}}/products/{{productId}}"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "Create order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Arrange\r",
+									"const schema = {\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"name\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"sku\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    },\r",
+									"    \"id\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"name\",\r",
+									"    \"sku\",\r",
+									"    \"id\"\r",
+									"  ]\r",
+									"};\r",
+									"\r",
+									"// Arrange\r",
+									"let jsonData = pm.response.json();\r",
+									"\r",
+									"// Act + Assert (status code)\r",
+									"pm.test(\"Status code is 201 (order created)\", function () {\r",
+									"    pm.expect(pm.response.code).to.eql(201);\r",
+									"});\r",
+									"\r",
+									"// Act + Assert (schema validation)\r",
+									"pm.test(\"Response matches the schema\", function () {\r",
+									"    pm.response.to.have.jsonSchema(schema);\r",
+									"});\r",
+									"\r",
+									"// Act + Assert (response time < 500 ms)\r",
+									"pm.test(\"Response time is less than 500ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+									"});\r",
+									"\r",
+									"// Save userId\r",
+									"pm.collectionVariables.set(\"orderId\", jsonData.id);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"order5\",\r\n    \"sku\": 123425445656765\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/orders"
+					},
+					"response": []
+				},
+				{
+					"name": "Get order by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Arrange\r",
+									"const schema = {\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"name\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"sku\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    },\r",
+									"    \"id\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"name\",\r",
+									"    \"sku\",\r",
+									"    \"id\"\r",
+									"  ]\r",
+									"};\r",
+									"\r",
+									"// Arrange\r",
+									"let jsonData = pm.response.json();\r",
+									"let savedOrderId = pm.collectionVariables.get(\"orderId\");\r",
+									"\r",
+									"// Act + Assert (status code)\r",
+									"pm.test(\"Status code is 200 (requested order returned)\", function () {\r",
+									"    pm.expect(pm.response.code).to.eql(200);\r",
+									"});\r",
+									"\r",
+									"// Act + Assert (schema validation)\r",
+									"pm.test(\"Response matches the schema\", function () {\r",
+									"    pm.response.to.have.jsonSchema(schema);\r",
+									"});\r",
+									"\r",
+									"// Act + Assert (response time < 500 ms)\r",
+									"pm.test(\"Response time is less than 500ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+									"});\r",
+									"\r",
+									"// Act + Assert (id is equal to saved id)\r",
+									"pm.test(\"Order id matches previously created id\", function () {\r",
+									"    pm.expect(jsonData.id).to.eql(Number(savedOrderId));\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/orders/{{orderId}}"
+					},
+					"response": []
+				},
+				{
+					"name": "List orders",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Arrange\r",
+									"const orderSchema = {\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"name\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"sku\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    },\r",
+									"    \"id\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"name\",\r",
+									"    \"sku\",\r",
+									"    \"id\"\r",
+									"  ]\r",
+									"};\r",
+									"\r",
+									"const ordersListSchema = {\r",
+									"  \"type\": \"array\",\r",
+									"  \"items\": orderSchema\r",
+									"};\r",
+									"\r",
+									"// Arrange\r",
+									"let ordersList = pm.response.json();  // users array\r",
+									"let savedOrderId = Number(pm.collectionVariables.get(\"orderId\")); // <- get saved orderId\r",
+									"\r",
+									"// Act + Assert (status code)\r",
+									"pm.test(\"Status code is 200 (order list retrieved)\", function () {\r",
+									"    pm.expect(pm.response.code).to.eql(200);\r",
+									"});\r",
+									"\r",
+									"// Act + Assert (schema validation)\r",
+									"pm.test(\"Response matches the schema\", function () {\r",
+									"    pm.response.to.have.jsonSchema(ordersListSchema);\r",
+									"});\r",
+									"\r",
+									"// Act + Assert (response time < 500 ms)\r",
+									"pm.test(\"Response time is less than 500ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+									"});\r",
+									"\r",
+									"// Act + Assert (list maintains the saved product)\r",
+									"pm.test(\"Previously created order is in the list\", function () {\r",
+									"    let orderIds = ordersList.map(order => order.id);\r",
+									"    pm.expect(orderIds).to.include(savedOrderId);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/orders"
+					},
+					"response": []
+				},
+				{
+					"name": "Update order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Arrange\r",
+									"const schema = {\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"name\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"sku\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    },\r",
+									"    \"id\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"name\",\r",
+									"    \"sku\",\r",
+									"    \"id\"\r",
+									"  ]\r",
+									"};\r",
+									"\r",
+									"// Arrange\r",
+									"let jsonData = pm.response.json();\r",
+									"let savedOrderId = pm.collectionVariables.get(\"orderId\");\r",
+									"\r",
+									"\r",
+									"// Act + Assert (status code)\r",
+									"pm.test(\"Status code is 200 (requested order returned)\", function () {\r",
+									"    pm.expect(pm.response.code).to.eql(200);\r",
+									"});\r",
+									"\r",
+									"// Act + Assert (schema validation)\r",
+									"pm.test(\"Response matches the schema\", function () {\r",
+									"    pm.response.to.have.jsonSchema(schema);\r",
+									"});\r",
+									"\r",
+									"// Act + Assert (response time < 500 ms)\r",
+									"pm.test(\"Response time is less than 500ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+									"});\r",
+									"\r",
+									"// Act + Assert (id is equal to saved id)\r",
+									"pm.test(\"Order id matches previously created id\", function () {\r",
+									"    pm.expect(jsonData.id).to.eql(Number(savedOrderId));\r",
+									"});\r",
+									"\r",
+									"// Act + Assert (updated fields check)\r",
+									"pm.test(\"Fields updated\", function () {\r",
+									"    pm.expect(jsonData.name).to.eql(\"order5\");\r",
+									"    pm.expect(jsonData.sku).to.eql(123425445656765);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": {{orderId}},\r\n    \"name\": \"order5\",\r\n    \"sku\": 123425445656765\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/orders"
+					},
+					"response": []
+				},
+				{
+					"name": "Remove order by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Act + Assert (status code)\r",
+									"pm.test(\"Status code is 200 or 204 (order deleted)\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 204]);\r",
+									"});\r",
+									"\r",
+									"// Act + Assert (response time < 500ms)\r",
+									"pm.test(\"Response time is less than 500ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+									"});\r",
+									"\r",
+									"// Check JSON only if there is a body\r",
+									"if (pm.response.body && pm.response.body.length > 0) {\r",
+									"    let jsonData = pm.response.json();\r",
+									"    pm.test(\"Order id matches the saved id\", function () {\r",
+									"        pm.expect(jsonData.id).to.eql(Number(pm.collectionVariables.get(\"orderId\")));\r",
+									"    });\r",
+									"}\r",
+									"// Remove variable from collection\r",
+									"pm.collectionVariables.unset(\"orderId\");\r",
+									"\r",
+									"// Check that variable does not exist anymore\r",
+									"pm.test(\"Previously created orderId variable removed\", function () {\r",
+									"    pm.expect(pm.collectionVariables.has(\"orderId\")).to.be.false;\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{baseUrl}}/orders/{{orderId}}"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Create user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Arrange\r",
+									"const schema = {\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"firstName\": { \"type\": \"string\" },\r",
+									"    \"lastName\": { \"type\": \"string\" },\r",
+									"    \"email\": { \"type\": \"string\" },\r",
+									"    \"dateOfBirth\": { \"type\": \"string\" },\r",
+									"    \"emailVerified\": { \"type\": \"boolean\" },\r",
+									"    \"signUpDate\": { \"type\": \"string\" },\r",
+									"    \"status\": { \"type\": \"string\" },\r",
+									"    \"level\": { \"type\": \"string\" },\r",
+									"    \"id\": { \"type\": \"integer\" }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"firstName\",\r",
+									"    \"lastName\",\r",
+									"    \"email\",\r",
+									"    \"dateOfBirth\",\r",
+									"    \"emailVerified\",\r",
+									"    \"signUpDate\",\r",
+									"    \"status\",\r",
+									"    \"level\",\r",
+									"    \"id\"\r",
+									"  ]\r",
+									"};\r",
+									"\r",
+									"// Arrange\r",
+									"let jsonData = pm.response.json();\r",
+									"\r",
+									"// Act + Assert (status code)\r",
+									"pm.test(\"Status code is 201 (user created)\", function () {\r",
+									"    pm.expect(pm.response.code).to.eql(201);\r",
+									"});\r",
+									"\r",
+									"// Act + Assert (schema validation)\r",
+									"pm.test(\"Response matches the schema\", function () {\r",
+									"    pm.response.to.have.jsonSchema(schema);\r",
+									"});\r",
+									"\r",
+									"// Act + Assert (response time < 500 ms)\r",
+									"pm.test(\"Response time is less than 500ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+									"});\r",
+									"\r",
+									"// Save userId\r",
+									"pm.collectionVariables.set(\"userId\", jsonData.id);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"Dream\",\r\n    \"lastName\": \"Real\",\r\n    \"email\": \"dream.real@gmail.com\",\r\n    \"dateOfBirth\": \"2001-10-99\",\r\n    \"emailVerified\": true,\r\n    \"signUpDate\": \"2019-08-24\",\r\n    \"status\": \"active\",\r\n    \"level\": \"lord\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/users"
+					},
+					"response": []
+				},
+				{
+					"name": "Get user by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Arrange\r",
+									"const schema = {\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"firstName\": { \"type\": \"string\" },\r",
+									"    \"lastName\": { \"type\": \"string\" },\r",
+									"    \"email\": { \"type\": \"string\" },\r",
+									"    \"dateOfBirth\": { \"type\": \"string\" },\r",
+									"    \"emailVerified\": { \"type\": \"boolean\" },\r",
+									"    \"signUpDate\": { \"type\": \"string\" },\r",
+									"    \"status\": { \"type\": \"string\" },\r",
+									"    \"level\": { \"type\": \"string\" },\r",
+									"    \"id\": { \"type\": \"integer\" }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"firstName\",\r",
+									"    \"lastName\",\r",
+									"    \"email\",\r",
+									"    \"dateOfBirth\",\r",
+									"    \"emailVerified\",\r",
+									"    \"signUpDate\",\r",
+									"    \"status\",\r",
+									"    \"level\",\r",
+									"    \"id\"\r",
+									"  ]\r",
+									"};\r",
+									"\r",
+									"// Arrange\r",
+									"let jsonData = pm.response.json();\r",
+									"let savedUserId = pm.collectionVariables.get(\"userId\");\r",
+									"\r",
+									"// Act + Assert (status code)\r",
+									"pm.test(\"Status code is 200 (requested user returned)\", function () {\r",
+									"    pm.expect(pm.response.code).to.eql(200);\r",
+									"});\r",
+									"\r",
+									"// Act + Assert (schema validation)\r",
+									"pm.test(\"Response matches the schema\", function () {\r",
+									"    pm.response.to.have.jsonSchema(schema);\r",
+									"});\r",
+									"\r",
+									"// Act + Assert (response time < 500 ms)\r",
+									"pm.test(\"Response time is less than 500ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+									"});\r",
+									"\r",
+									"// Act + Assert (id is equal to saved id)\r",
+									"pm.test(\"User id matches previously created id\", function () {\r",
+									"    pm.expect(jsonData.id).to.eql(Number(savedUserId));\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/users/{{userId}}"
+					},
+					"response": []
+				},
+				{
+					"name": "List users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Arrange\r",
+									"const userSchema = {\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"firstName\": { \"type\": \"string\" },\r",
+									"    \"lastName\": { \"type\": \"string\" },\r",
+									"    \"email\": { \"type\": \"string\" },\r",
+									"    \"dateOfBirth\": { \"type\": \"string\" },\r",
+									"    \"emailVerified\": { \"type\": \"boolean\" },\r",
+									"    \"signUpDate\": { \"type\": \"string\" },\r",
+									"    \"status\": { \"type\": \"string\" },\r",
+									"    \"level\": { \"type\": \"string\" },\r",
+									"    \"id\": { \"type\": \"integer\" }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"firstName\",\r",
+									"    \"lastName\",\r",
+									"    \"email\",\r",
+									"    \"dateOfBirth\",\r",
+									"    \"emailVerified\",\r",
+									"    \"signUpDate\",\r",
+									"    \"status\",\r",
+									"    \"level\",\r",
+									"    \"id\"\r",
+									"  ]\r",
+									"};\r",
+									"\r",
+									"const usersListSchema = {\r",
+									"  \"type\": \"array\",\r",
+									"  \"items\": userSchema\r",
+									"};\r",
+									"\r",
+									"// Arrange\r",
+									"let usersList = pm.response.json();  // users array\r",
+									"let savedUserId = Number(pm.collectionVariables.get(\"userId\")); // <- get saved userId\r",
+									"\r",
+									"// Act + Assert (status code)\r",
+									"pm.test(\"Status code is 200 (user list retrieved)\", function () {\r",
+									"    pm.expect(pm.response.code).to.eql(200);\r",
+									"});\r",
+									"\r",
+									"// Act + Assert (schema validation)\r",
+									"pm.test(\"Response matches the schema\", function () {\r",
+									"    pm.response.to.have.jsonSchema(usersListSchema);\r",
+									"});\r",
+									"\r",
+									"// Act + Assert (response time < 500 ms)\r",
+									"pm.test(\"Response time is less than 500ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+									"});\r",
+									"\r",
+									"// Act + Assert (list maintains the saved user)\r",
+									"pm.test(\"Previously created user is in the list\", function () {\r",
+									"    let userIds = usersList.map(user => user.id);\r",
+									"    pm.expect(userIds).to.include(savedUserId);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/users"
+					},
+					"response": []
+				},
+				{
+					"name": "Update user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Arrange\r",
+									"const schema = {\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"firstName\": { \"type\": \"string\" },\r",
+									"    \"lastName\": { \"type\": \"string\" },\r",
+									"    \"email\": { \"type\": \"string\" },\r",
+									"    \"dateOfBirth\": { \"type\": \"string\" },\r",
+									"    \"emailVerified\": { \"type\": \"boolean\" },\r",
+									"    \"signUpDate\": { \"type\": \"string\" },\r",
+									"    \"status\": { \"type\": \"string\" },\r",
+									"    \"level\": { \"type\": \"string\" },\r",
+									"    \"id\": { \"type\": \"integer\" }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"firstName\",\r",
+									"    \"lastName\",\r",
+									"    \"email\",\r",
+									"    \"dateOfBirth\",\r",
+									"    \"emailVerified\",\r",
+									"    \"signUpDate\",\r",
+									"    \"status\",\r",
+									"    \"level\",\r",
+									"    \"id\"\r",
+									"  ]\r",
+									"};\r",
+									"\r",
+									"// Arrange\r",
+									"let jsonData = pm.response.json();\r",
+									"let savedUserId = pm.collectionVariables.get(\"userId\");\r",
+									"\r",
+									"\r",
+									"// Act + Assert (status code)\r",
+									"pm.test(\"Status code is 200 (requested user returned)\", function () {\r",
+									"    pm.expect(pm.response.code).to.eql(200);\r",
+									"});\r",
+									"\r",
+									"// Act + Assert (schema validation)\r",
+									"pm.test(\"Response matches the schema\", function () {\r",
+									"    pm.response.to.have.jsonSchema(schema);\r",
+									"});\r",
+									"\r",
+									"// Act + Assert (response time < 500 ms)\r",
+									"pm.test(\"Response time is less than 500ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+									"});\r",
+									"\r",
+									"// Act + Assert (id is equal to saved id)\r",
+									"pm.test(\"User id matches previously created id\", function () {\r",
+									"    pm.expect(jsonData.id).to.eql(Number(savedUserId));\r",
+									"});\r",
+									"\r",
+									"// Act + Assert (updated fields check)\r",
+									"pm.test(\"Fields updated\", function () {\r",
+									"    pm.expect(jsonData.firstName).to.eql(\"Ilon\");\r",
+									"    pm.expect(jsonData.lastName).to.eql(\"Mask\");\r",
+									"    pm.expect(jsonData.email).to.eql(\"ilon.mask@gmail.com\");\r",
+									"    pm.expect(jsonData.dateOfBirth).to.eql(\"2001-10-99\");\r",
+									"    pm.expect(jsonData.emailVerified).to.eql(true);\r",
+									"    pm.expect(jsonData.signUpDate).to.eql(\"2019-08-24\");\r",
+									"    pm.expect(jsonData.status).to.eql(\"active\");\r",
+									"    pm.expect(jsonData.level).to.eql(\"lord\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"Ilon\",\r\n    \"lastName\": \"Mask\",\r\n    \"email\": \"ilon.mask@gmail.com\",\r\n    \"dateOfBirth\": \"2001-10-99\",\r\n    \"emailVerified\": true,\r\n    \"signUpDate\": \"2019-08-24\",\r\n    \"status\": \"active\",\r\n    \"level\": \"lord\",\r\n    \"id\": {{userId}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/users"
+					},
+					"response": []
+				},
+				{
+					"name": "Remove user by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Act + Assert (status code)\r",
+									"pm.test(\"Status code is 200 or 204 (user deleted)\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 204]);\r",
+									"});\r",
+									"\r",
+									"// Act + Assert (response time < 500ms)\r",
+									"pm.test(\"Response time is less than 500ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+									"});\r",
+									"\r",
+									"// Check JSON only if there is a body\r",
+									"if (pm.response.body && pm.response.body.length > 0) {\r",
+									"    let jsonData = pm.response.json();\r",
+									"    pm.test(\"User id matches the saved id\", function () {\r",
+									"        pm.expect(jsonData.id).to.eql(Number(pm.collectionVariables.get(\"userId\")));\r",
+									"    });\r",
+									"}\r",
+									"// Remove variable from collection\r",
+									"pm.collectionVariables.unset(\"userId\");\r",
+									"\r",
+									"// Check that variable does not exist anymore\r",
+									"pm.test(\"Previously created userId variable removed\", function () {\r",
+									"    pm.expect(pm.collectionVariables.has(\"userId\")).to.be.false;\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{baseUrl}}/users/{{userId}}"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3000"
+		}
+	]
+}
