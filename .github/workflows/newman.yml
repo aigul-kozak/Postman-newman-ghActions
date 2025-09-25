@@ -1,35 +1,51 @@
-name: Newman Tests
+name: Run Postman Collections
 
 on:
   push:
     branches:
       - main
   pull_request:
+    branches:
+      - main
 
 jobs:
-  newman:
+  run-newman:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout repo
+      # 1. Клонируем репозиторий
+      - name: Checkout repository
         uses: actions/checkout@v3
 
+      # 2. Настраиваем Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: 22
 
+      # 3. Устанавливаем зависимости
       - name: Install dependencies
         run: npm install
 
-      - name: Run store collection
-        run: npm run run-tests:store
+      # 4. Поднимаем мок-сервер в фоне
+      - name: Start Mock API
+        run: npm run tern-on-api &
 
-      - name: Run petstore collection
-        run: npm run run-tests:petstore
+      # 5. Ждём, пока сервер будет доступен
+      - name: Wait for API
+        run: npx wait-on http://localhost:3000
 
-      - name: Deploy reports to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+      # 6. Запускаем коллекцию Store
+      - name: Run Store Collection
+        run: npx newman run storeV2_collection.json -r htmlextra --reporter-htmlextra-export reports/store-report.html
+
+      # 7. Запускаем коллекцию Petstore
+      - name: Run Petstore Collection
+        run: npx newman run petstore.collection.json -r htmlextra --reporter-htmlextra-export reports/petstore-report.html
+
+      # 8. (Опционально) Можно загрузить отчёты как артефакты
+      - name: Upload reports
+        uses: actions/upload-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./reports
-          publish_branch: gh-pages
+          name: newman-reports
+          path: reports/
