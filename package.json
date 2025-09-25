@@ -3,12 +3,25 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "tern-on-api": "cp mockApi/db_back_up.yaml mockApi/db_stage.yaml && npx yaml-server --hotReload=off --autoStart=off --port 3000 --database ./mockApi/db_stage.yaml"
+    "tern-on-api": "cp mockApi/db_back_up.yaml mockApi/db_stage.yaml && npx yaml-server --hotReload=off --autoStart=off --port 3000 --database ./mockApi/db_stage.yaml",
+    "run-tests:store": "newman run storeV2_collection.json -r htmlextra --reporter-htmlextra-export reports/store-report.html",
+    "run-tests:petstore": "newman run petstore.collection.json -r htmlextra --reporter-htmlextra-export reports/petstore-report.html",
+    "run-tests": "npm run run-tests:store && npm run run-tests:petstore"
   },
-  "keywords": ["api","mock","yaml-server","rest"],
+  "keywords": [
+    "api",
+    "mock",
+    "yaml-server",
+    "rest"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "yaml-server": "^1.10.0"
+  },
+  "devDependencies": {
+    "gh-pages": "^6.3.0",
+    "newman": "^6.2.1",
+    "newman-reporter-htmlextra": "^1.23.1"
   }
 }
