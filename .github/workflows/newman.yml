@@ -42,10 +42,3 @@ jobs:
       # 7. Запускаем коллекцию Petstore
       - name: Run Petstore Collection
         run: npx newman run petstore.collection.json -r htmlextra --reporter-htmlextra-export reports/petstore-report.html
-
-      # 8. (Опционально) Можно загрузить отчёты как артефакты
-      - name: Upload reports
-        uses: actions/upload-artifact@v4
-        with:
-          name: newman-reports
-          path: reports/
