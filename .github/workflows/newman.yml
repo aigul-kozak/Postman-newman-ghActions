@@ -45,7 +45,7 @@ jobs:
 
       # 8. (Опционально) Можно загрузить отчёты как артефакты
       - name: Upload reports
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: newman-reports
           path: reports/
