@@ -6,8 +6,7 @@
     "kill-3000": "npx kill-port 3000",
     "start-json-api": "npm run kill-3000 && json-server ./mockApi/db_stage.json --port 3000",
     "test:store": "newman run storeV2_collection.json -r htmlextra --reporter-htmlextra-export reports/store-report.html",
-    "test:petstore": "newman run petstore.collection.json -r htmlextra --reporter-htmlextra-export reports/petstore-report.html",
-    "start-and-test": "npm run start-json-api & npx wait-on http://localhost:3000 && npm run test:store && npm run test:petstore"
+    "start-and-test": "npm run start-json-api & npx wait-on http://localhost:3000 && npm run test:store"
   },
   "keywords": [
     "api",
