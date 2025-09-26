@@ -3,10 +3,12 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "tern-on-api": "cp mockApi/db_back_up.yaml mockApi/db_stage.yaml && npx yaml-server --hotReload=off --autoStart=off --port 3000 --database ./mockApi/db_stage.yaml",
-    "run-tests:store": "newman run storeV2_collection.json -r htmlextra --reporter-htmlextra-export reports/store-report.html",
-    "run-tests:petstore": "newman run petstore.collection.json -r htmlextra --reporter-htmlextra-export reports/petstore-report.html",
-    "run-tests": "npm run run-tests:store && npm run run-tests:petstore"
+    "kill-3000": "npx kill-port 3000",
+    "yaml-to-json": "node -e \"const fs=require('fs'); const yaml=require('js-yaml'); fs.writeFileSync('mockApi/db_stage.json', JSON.stringify(yaml.load(fs.readFileSync('mockApi/db_back_up.yml', 'utf8')), null, 2));\"",
+    "start-json-api": "npm run kill-3000 && npm run yaml-to-json && json-server --watch mockApi/db_stage.json --port 3000",
+    "test:store": "newman run storeV2_collection.json -r htmlextra --reporter-htmlextra-export reports/store-report.html",
+    "test:petstore": "newman run petstore.collection.json -r htmlextra --reporter-htmlextra-export reports/petstore-report.html",
+    "start-and-test": "start-server-and-test 'npm run start-json-api' http://localhost:3000 'npm run test:store && npm run test:petstore'"
   },
   "keywords": [
     "api",
@@ -21,6 +23,8 @@
   },
   "devDependencies": {
     "gh-pages": "^6.3.0",
+    "js-yaml": "^4.1.0",
+    "kill-port": "^2.0.1",
     "newman": "^6.2.1",
     "newman-reporter-htmlextra": "^1.23.1",
     "wait-on": "^9.0.1"
