@@ -48,6 +48,13 @@
       "price": 155,
       "sku": 123321123,
       "description": "changed description"
+    },
+    {
+      "name": "orange",
+      "price": 8,
+      "sku": 123321123,
+      "description": "wouh",
+      "id": "A0CO-AU"
     }
   ],
   "orders": [
