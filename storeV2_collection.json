@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "ddfec648-90d2-4f61-a67c-4fa3b00a8fb6",
 		"name": "store",
-		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "5617590"
 	},
 	"item": [
@@ -33,7 +33,7 @@
 									"      \"type\": \"string\"\r",
 									"    },\r",
 									"    \"id\": {\r",
-									"      \"type\": \"integer\"\r",
+									"      \"type\": \"string\"\r",
 									"    }\r",
 									"  },\r",
 									"  \"required\": [\r",
@@ -64,7 +64,7 @@
 									"});\r",
 									"\r",
 									"// Save productId\r",
-									"pm.collectionVariables.set(\"productId\", jsonData.id);\r",
+									"pm.collectionVariables.set(\"productId\", String(jsonData.id));\r",
 									""
 								],
 								"type": "text/javascript",
@@ -85,7 +85,15 @@
 								}
 							}
 						},
-						"url": "{{baseUrl}}/products"
+						"url": {
+							"raw": "{{baseUrl}}/products",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							]
+						}
 					},
 					"response": []
 				},
@@ -113,7 +121,7 @@
 									"      \"type\": \"string\"\r",
 									"    },\r",
 									"    \"id\": {\r",
-									"      \"type\": \"integer\"\r",
+									"      \"type\": \"string\"\r",
 									"    }\r",
 									"  },\r",
 									"  \"required\": [\r",
@@ -146,7 +154,7 @@
 									"\r",
 									"// Act + Assert (id is equal to saved id)\r",
 									"pm.test(\"Product id matches previously created id\", function () {\r",
-									"    pm.expect(jsonData.id).to.eql(Number(savedProductId));\r",
+									"    pm.expect(jsonData.id).to.eql(savedProductId);\r",
 									"});\r",
 									""
 								],
@@ -159,7 +167,16 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "{{baseUrl}}/products/{{productId}}"
+						"url": {
+							"raw": "{{baseUrl}}/products/{{productId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								"{{productId}}"
+							]
+						}
 					},
 					"response": []
 				},
@@ -181,13 +198,13 @@
 									"      \"type\": \"integer\"\r",
 									"    },\r",
 									"    \"sku\": {\r",
-									"      \"type\": \"integer\"\r",
+									"       \"type\": [\"string\", \"number\"]\r",
 									"    },\r",
 									"    \"description\": {\r",
 									"      \"type\": \"string\"\r",
 									"    },\r",
 									"    \"id\": {\r",
-									"      \"type\": \"integer\"\r",
+									"      \"type\": \"string\"\r",
 									"    }\r",
 									"  },\r",
 									"  \"required\": [\r",
@@ -206,7 +223,7 @@
 									"\r",
 									"// Arrange\r",
 									"let productsList = pm.response.json();  // users array\r",
-									"let savedProductId = Number(pm.collectionVariables.get(\"productId\")); // <- get saved orderId\r",
+									"let savedProductId = pm.collectionVariables.get(\"productId\"); // <- get saved orderId\r",
 									"\r",
 									"// Act + Assert (status code)\r",
 									"pm.test(\"Status code is 200 (product list retrieved)\", function () {\r",
@@ -238,7 +255,15 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "{{baseUrl}}/products"
+						"url": {
+							"raw": "{{baseUrl}}/products",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							]
+						}
 					},
 					"response": []
 				},
@@ -260,13 +285,13 @@
 									"      \"type\": \"integer\"\r",
 									"    },\r",
 									"    \"sku\": {\r",
-									"      \"type\": \"integer\"\r",
+									"      \"type\": [\"integer\", \"string\"]\r",
 									"    },\r",
 									"    \"description\": {\r",
 									"      \"type\": \"string\"\r",
 									"    },\r",
 									"    \"id\": {\r",
-									"      \"type\": \"integer\"\r",
+									"      \"type\": [\"integer\", \"string\"]\r",
 									"    }\r",
 									"  },\r",
 									"  \"required\": [\r",
@@ -300,7 +325,7 @@
 									"\r",
 									"// Act + Assert (id is equal to saved id)\r",
 									"pm.test(\"Product id matches previously created id\", function () {\r",
-									"    pm.expect(jsonData.id).to.eql(Number(savedProductId));\r",
+									"    pm.expect(jsonData.id).to.eql(savedProductId);\r",
 									"});\r",
 									"\r",
 									"// Act + Assert (updated fields check)\r",
@@ -322,14 +347,23 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": {{productId}},\r\n    \"name\": \"banana\",\r\n    \"price\": 155,\r\n    \"sku\": 123321123,\r\n    \"description\": \"changed description\"\r\n}",
+							"raw": "{\r\n    \"id\": \"{{productId}}\",\r\n    \"name\": \"banana\",\r\n    \"price\": 155,\r\n    \"sku\": 123321123,\r\n    \"description\": \"changed description\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "{{baseUrl}}/products"
+						"url": {
+							"raw": "{{baseUrl}}/products/{{productId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								"{{productId}}"
+							]
+						}
 					},
 					"response": []
 				},
@@ -375,7 +409,16 @@
 					"request": {
 						"method": "DELETE",
 						"header": [],
-						"url": "{{baseUrl}}/products/{{productId}}"
+						"url": {
+							"raw": "{{baseUrl}}/products/{{productId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								"{{productId}}"
+							]
+						}
 					},
 					"response": []
 				}
@@ -399,10 +442,10 @@
 									"      \"type\": \"string\"\r",
 									"    },\r",
 									"    \"sku\": {\r",
-									"      \"type\": \"integer\"\r",
+									"      \"type\": [\"string\", \"number\"]\r",
 									"    },\r",
 									"    \"id\": {\r",
-									"      \"type\": \"integer\"\r",
+									"      \"type\": [\"string\", \"number\"]\r",
 									"    }\r",
 									"  },\r",
 									"  \"required\": [\r",
@@ -431,7 +474,7 @@
 									"});\r",
 									"\r",
 									"// Save userId\r",
-									"pm.collectionVariables.set(\"orderId\", jsonData.id);\r",
+									"pm.collectionVariables.set(\"orderId\", String(jsonData.id));\r",
 									""
 								],
 								"type": "text/javascript",
@@ -452,7 +495,15 @@
 								}
 							}
 						},
-						"url": "{{baseUrl}}/orders"
+						"url": {
+							"raw": "{{baseUrl}}/orders",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orders"
+							]
+						}
 					},
 					"response": []
 				},
@@ -471,10 +522,10 @@
 									"      \"type\": \"string\"\r",
 									"    },\r",
 									"    \"sku\": {\r",
-									"      \"type\": \"integer\"\r",
+									"      \"type\": [\"string\", \"number\"]\r",
 									"    },\r",
 									"    \"id\": {\r",
-									"      \"type\": \"integer\"\r",
+									"      \"type\": [\"string\", \"number\"]\r",
 									"    }\r",
 									"  },\r",
 									"  \"required\": [\r",
@@ -505,7 +556,7 @@
 									"\r",
 									"// Act + Assert (id is equal to saved id)\r",
 									"pm.test(\"Order id matches previously created id\", function () {\r",
-									"    pm.expect(jsonData.id).to.eql(Number(savedOrderId));\r",
+									"    pm.expect(jsonData.id).to.eql(savedOrderId);\r",
 									"});\r",
 									""
 								],
@@ -518,7 +569,16 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "{{baseUrl}}/orders/{{orderId}}"
+						"url": {
+							"raw": "{{baseUrl}}/orders/{{orderId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orders",
+								"{{orderId}}"
+							]
+						}
 					},
 					"response": []
 				},
@@ -537,10 +597,10 @@
 									"      \"type\": \"string\"\r",
 									"    },\r",
 									"    \"sku\": {\r",
-									"      \"type\": \"integer\"\r",
+									"      \"type\": [\"string\", \"number\"]\r",
 									"    },\r",
 									"    \"id\": {\r",
-									"      \"type\": \"integer\"\r",
+									"      \"type\": [\"string\", \"number\"]\r",
 									"    }\r",
 									"  },\r",
 									"  \"required\": [\r",
@@ -557,7 +617,7 @@
 									"\r",
 									"// Arrange\r",
 									"let ordersList = pm.response.json();  // users array\r",
-									"let savedOrderId = Number(pm.collectionVariables.get(\"orderId\")); // <- get saved orderId\r",
+									"let savedOrderId = pm.collectionVariables.get(\"orderId\"); // <- get saved orderId\r",
 									"\r",
 									"// Act + Assert (status code)\r",
 									"pm.test(\"Status code is 200 (order list retrieved)\", function () {\r",
@@ -589,7 +649,15 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "{{baseUrl}}/orders"
+						"url": {
+							"raw": "{{baseUrl}}/orders",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orders"
+							]
+						}
 					},
 					"response": []
 				},
@@ -608,10 +676,10 @@
 									"      \"type\": \"string\"\r",
 									"    },\r",
 									"    \"sku\": {\r",
-									"      \"type\": \"integer\"\r",
+									"      \"type\": [\"string\", \"number\"]\r",
 									"    },\r",
 									"    \"id\": {\r",
-									"      \"type\": \"integer\"\r",
+									"      \"type\": [\"string\", \"number\"]\r",
 									"    }\r",
 									"  },\r",
 									"  \"required\": [\r",
@@ -643,7 +711,7 @@
 									"\r",
 									"// Act + Assert (id is equal to saved id)\r",
 									"pm.test(\"Order id matches previously created id\", function () {\r",
-									"    pm.expect(jsonData.id).to.eql(Number(savedOrderId));\r",
+									"    pm.expect(jsonData.id).to.eql(savedOrderId);\r",
 									"});\r",
 									"\r",
 									"// Act + Assert (updated fields check)\r",
@@ -663,14 +731,23 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": {{orderId}},\r\n    \"name\": \"order5\",\r\n    \"sku\": 123425445656765\r\n}",
+							"raw": "{\r\n    \"id\": \"{{orderId}}\",\r\n    \"name\": \"order5\",\r\n    \"sku\": 123425445656765\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "{{baseUrl}}/orders"
+						"url": {
+							"raw": "{{baseUrl}}/orders/{{orderId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orders",
+								"{{orderId}}"
+							]
+						}
 					},
 					"response": []
 				},
@@ -716,7 +793,16 @@
 					"request": {
 						"method": "DELETE",
 						"header": [],
-						"url": "{{baseUrl}}/orders/{{orderId}}"
+						"url": {
+							"raw": "{{baseUrl}}/orders/{{orderId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orders",
+								"{{orderId}}"
+							]
+						}
 					},
 					"response": []
 				}
@@ -744,7 +830,7 @@
 									"    \"signUpDate\": { \"type\": \"string\" },\r",
 									"    \"status\": { \"type\": \"string\" },\r",
 									"    \"level\": { \"type\": \"string\" },\r",
-									"    \"id\": { \"type\": \"integer\" }\r",
+									"    \"id\": { \"type\": [\"string\", \"number\"] }\r",
 									"  },\r",
 									"  \"required\": [\r",
 									"    \"firstName\",\r",
@@ -778,7 +864,7 @@
 									"});\r",
 									"\r",
 									"// Save userId\r",
-									"pm.collectionVariables.set(\"userId\", jsonData.id);\r",
+									"pm.collectionVariables.set(\"userId\", String(jsonData.id));\r",
 									""
 								],
 								"type": "text/javascript",
@@ -799,7 +885,15 @@
 								}
 							}
 						},
-						"url": "{{baseUrl}}/users"
+						"url": {
+							"raw": "{{baseUrl}}/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users"
+							]
+						}
 					},
 					"response": []
 				},
@@ -822,7 +916,7 @@
 									"    \"signUpDate\": { \"type\": \"string\" },\r",
 									"    \"status\": { \"type\": \"string\" },\r",
 									"    \"level\": { \"type\": \"string\" },\r",
-									"    \"id\": { \"type\": \"integer\" }\r",
+									"    \"id\": { \"type\": [\"string\", \"number\"] }\r",
 									"  },\r",
 									"  \"required\": [\r",
 									"    \"firstName\",\r",
@@ -858,7 +952,7 @@
 									"\r",
 									"// Act + Assert (id is equal to saved id)\r",
 									"pm.test(\"User id matches previously created id\", function () {\r",
-									"    pm.expect(jsonData.id).to.eql(Number(savedUserId));\r",
+									"    pm.expect(jsonData.id).to.eql(savedUserId);\r",
 									"});\r",
 									""
 								],
@@ -871,7 +965,16 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "{{baseUrl}}/users/{{userId}}"
+						"url": {
+							"raw": "{{baseUrl}}/users/{{userId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"{{userId}}"
+							]
+						}
 					},
 					"response": []
 				},
@@ -894,7 +997,7 @@
 									"    \"signUpDate\": { \"type\": \"string\" },\r",
 									"    \"status\": { \"type\": \"string\" },\r",
 									"    \"level\": { \"type\": \"string\" },\r",
-									"    \"id\": { \"type\": \"integer\" }\r",
+									"    \"id\": { \"type\": [\"string\", \"number\"] }\r",
 									"  },\r",
 									"  \"required\": [\r",
 									"    \"firstName\",\r",
@@ -916,7 +1019,7 @@
 									"\r",
 									"// Arrange\r",
 									"let usersList = pm.response.json();  // users array\r",
-									"let savedUserId = Number(pm.collectionVariables.get(\"userId\")); // <- get saved userId\r",
+									"let savedUserId = pm.collectionVariables.get(\"userId\"); // <- get saved userId\r",
 									"\r",
 									"// Act + Assert (status code)\r",
 									"pm.test(\"Status code is 200 (user list retrieved)\", function () {\r",
@@ -948,7 +1051,15 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "{{baseUrl}}/users"
+						"url": {
+							"raw": "{{baseUrl}}/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users"
+							]
+						}
 					},
 					"response": []
 				},
@@ -971,7 +1082,7 @@
 									"    \"signUpDate\": { \"type\": \"string\" },\r",
 									"    \"status\": { \"type\": \"string\" },\r",
 									"    \"level\": { \"type\": \"string\" },\r",
-									"    \"id\": { \"type\": \"integer\" }\r",
+									"    \"id\": { \"type\": [\"string\", \"number\"] }\r",
 									"  },\r",
 									"  \"required\": [\r",
 									"    \"firstName\",\r",
@@ -1008,7 +1119,7 @@
 									"\r",
 									"// Act + Assert (id is equal to saved id)\r",
 									"pm.test(\"User id matches previously created id\", function () {\r",
-									"    pm.expect(jsonData.id).to.eql(Number(savedUserId));\r",
+									"    pm.expect(jsonData.id).to.eql(savedUserId);\r",
 									"});\r",
 									"\r",
 									"// Act + Assert (updated fields check)\r",
@@ -1034,14 +1145,23 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"firstName\": \"Ilon\",\r\n    \"lastName\": \"Mask\",\r\n    \"email\": \"ilon.mask@gmail.com\",\r\n    \"dateOfBirth\": \"2001-10-99\",\r\n    \"emailVerified\": true,\r\n    \"signUpDate\": \"2019-08-24\",\r\n    \"status\": \"active\",\r\n    \"level\": \"lord\",\r\n    \"id\": {{userId}}\r\n}",
+							"raw": "{\r\n    \"firstName\": \"Ilon\",\r\n    \"lastName\": \"Mask\",\r\n    \"email\": \"ilon.mask@gmail.com\",\r\n    \"dateOfBirth\": \"2001-10-99\",\r\n    \"emailVerified\": true,\r\n    \"signUpDate\": \"2019-08-24\",\r\n    \"status\": \"active\",\r\n    \"level\": \"lord\",\r\n    \"id\": \"{{userId}}\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "{{baseUrl}}/users"
+						"url": {
+							"raw": "{{baseUrl}}/users/{{userId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"{{userId}}"
+							]
+						}
 					},
 					"response": []
 				},
@@ -1087,7 +1207,68 @@
 					"request": {
 						"method": "DELETE",
 						"header": [],
-						"url": "{{baseUrl}}/users/{{userId}}"
+						"url": {
+							"raw": "{{baseUrl}}/users/{{userId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"{{userId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "negative-tests",
+			"item": [
+				{
+					"name": "Get order Not found 404",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Act + Assert (status code 404)\r",
+									"pm.test(\"Status code is 404 (not found)\", function () {\r",
+									"    pm.expect(pm.response.code).to.eql(404);\r",
+									"});\r",
+									"\r",
+									"// Act + Assert (response time < 500ms)\r",
+									"pm.test(\"Response time is less than 500ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+									"});\r",
+									"\r",
+									"// Act + Assert (error message, если API возвращает JSON)\r",
+									"if (pm.response.body && pm.response.body.length > 0) {\r",
+									"    let jsonData = pm.response.json();\r",
+									"    pm.test(\"Error message is 'Not Found'\", function () {\r",
+									"        pm.expect(jsonData.message).to.eql(\"Not Found\");\r",
+									"    });\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/orders/0",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orders",
+								"0"
+							]
+						}
 					},
 					"response": []
 				}
