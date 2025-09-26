@@ -5,7 +5,7 @@ on:
     branches:
       - main
   pull_request:
-  workflow_dispatch: 
+  workflow_dispatch:
 
 jobs:
   test:
@@ -25,7 +25,6 @@ jobs:
 
       - name: Start JSON Server in background
         run: npm run tern-on-api & sleep 5
-        
 
       - name: Wait for server
         run: npx wait-on http://localhost:3000
@@ -42,10 +41,15 @@ jobs:
           name: store-report
           path: reports/store-report.html
 
+      - name: Create index.html for GitHub Pages
+        run: |
+          echo '<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0; URL=store-report.html"></head><body></body></html>' > reports/index.html
+
       - name: Deploy reports to gh-pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
           publish_dir: ./reports
-          keep_files: true
+          destination_dir: ""
+          keep_files: false
