@@ -6,7 +6,7 @@
     "kill-3000": "npx kill-port 3000",
     "start-json-api": "npm run kill-3000 && json-server ./mockApi/db_stage.json --port 3000",
     "test:store": "newman run storeV2_collection.json -r htmlextra --reporter-htmlextra-export reports/store-report.html",
-    "start-and-test": "npm run start-json-api & npx wait-on http://localhost:3000 && npm run test:store"
+    "start-and-test": "npx start-server-and-test 'npm run tern-on-api' http://localhost:3000 'npm run test:store'"
   },
   "keywords": [
     "api",
@@ -24,7 +24,7 @@
     "kill-port": "^1.6.1",
     "newman": "^6.2.1",
     "newman-reporter-htmlextra": "^1.23.0",
-    "start-server-and-test": "^1.14.0",
+    "start-server-and-test": "^1.15.4",
     "wait-on": "^9.0.1"
   }
 }
